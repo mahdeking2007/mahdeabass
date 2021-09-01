@@ -1,0 +1,914 @@
+import React,{useState} from 'react'
+import { SafeAreaView, View, FlatList, Text, Image,TouchableOpacity,ImageBackground,Dimensions, ScrollView,Linking,Model, Modal,Animated} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+// Tab ICons..
+// Menu
+import menu from './assets/menu.png';
+import close from './assets/close.png';
+
+// Photo
+import photo from './assets/profile.png';
+
+const Tab=createBottomTabNavigator()
+
+const App = ({navigation}) => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+	const [showScore, setShowScore] = useState(false);
+  const [show, setShow] = useState(false);
+	const [score, setScore] = useState(3);
+  const [score1, setScore1] = useState(0);
+  const [showScore1, setShowScore1] = useState(false);
+  const [score2, setScore2] = useState(0);
+  const [currentQuestion1, setCurrentQuestion1] = useState(0);
+  const [core, setcore] = useState(25);
+  const [core1, setcore1] = useState(25);
+  const [showpassword,setshowpassword]=useState(true)
+  const [Password,setpassword]=useState("")
+  const [Email,setEmail]=useState("")
+  const [PasswordConform,setpasswordConform]=useState(setpassword)
+  const [Username,setUsername]=useState("mahde")
+  function profile() {
+    const [currentTab, setCurrentTab] = useState("Home");
+    // To get the curretn Status of menu ...
+    const [showMenu, setShowMenu] = useState(false);
+  
+    // Animated Properties...
+  
+    const offsetValue = useRef(new Animated.Value(0)).current;
+    // Scale Intially must be One...
+    const scaleValue = useRef(new Animated.Value(1)).current;
+    const closeButtonOffset = useRef(new Animated.Value(0)).current;
+  
+    return (
+      <SafeAreaView style={styles.container}>
+  
+        <View style={{ justifyContent: 'flex-start', padding: 15 }}>
+          <Image source={require('./assets/profile.png')} style={{
+            width: 60,
+            height: 60,
+            borderRadius: 10,
+            marginTop: 8
+          }}></Image>
+  
+          <Text style={{
+            fontSize: 20,
+            fontWeight: 'bold',
+            color: 'white',
+            marginTop: 20 
+          }}>{Username}</Text>
+          <View style={{ flexGrow: 1, marginTop: 50 }}>
+            {
+              // Tab Bar Buttons....
+            }
+            {TabButton(currentTab, setCurrentTab, "Settings",)}
+            {TabButton(currentTab, setCurrentTab, "privet", )}
+          </View>
+  
+          <View>
+            {TabButton(currentTab, setCurrentTab, "LogOut", logout)}
+          </View>
+  
+        </View>
+  
+        {
+          // Over lay View...
+        }
+  
+        <Animated.View style={{
+          flexGrow: 1,
+          backgroundColor: 'white',
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          paddingHorizontal: 15,
+          paddingVertical: 20,
+          borderRadius: showMenu ? 15 : 0,
+          // Transforming View...
+          transform: [
+            { scale: scaleValue },
+            { translateX: offsetValue }
+          ]
+        }}>
+  
+          {
+            // Menu Button...
+          }
+  
+          <Animated.View style={{
+            transform: [{
+              translateY: closeButtonOffset
+            }]
+          }}>
+            <TouchableOpacity onPress={() => {
+              // Do Actions Here....
+              // Scaling the view...
+              Animated.timing(scaleValue, {
+                toValue: showMenu ? 1 : 0.88,
+                duration: 300,
+                useNativeDriver: true
+              })
+                .start()
+  
+              Animated.timing(offsetValue, {
+                // YOur Random Value...
+                toValue: showMenu ? 0 : 230,
+                duration: 300,
+                useNativeDriver: true
+              })
+                .start()
+  
+              Animated.timing(closeButtonOffset, {
+                // YOur Random Value...
+                toValue: !showMenu ? -30 : 0,
+                duration: 300,
+                useNativeDriver: true
+              })
+                .start()
+  
+              setShowMenu(!showMenu);
+              
+            }}>
+  
+              <Image source={showMenu ? close : menu} style={{
+                width: 20,
+                height: 20,
+                tintColor: 'black',
+                marginTop: 40,
+  
+              }}></Image>
+  
+            </TouchableOpacity>
+  
+            <Text style={{
+              fontSize: 30,
+              fontWeight: 'bold',
+              color: 'black',
+              paddingTop: 20
+            }}>{currentTab}</Text>
+            <Image source={require('./assets/profile.png')} style={{
+              width: "70%",
+              height: 200,
+              borderRadius: 15,
+              marginTop: 25
+            }}></Image>
+            <Text style={{
+              fontSize: 20,
+              fontWeight: 'bold'
+              , paddingTop: 15,
+              paddingBottom: 5
+            }}>{Username}</Text>
+            { 
+            setShow(
+                <View>
+                <TouchableOpacity style={{width:"70%",height:100,}}>
+                  <Text>اضافة حساب </Text>
+                </TouchableOpacity>
+              </View>
+            )
+            }
+          </Animated.View>
+  
+        </Animated.View>
+  
+      </SafeAreaView>
+    );
+  }
+  
+  // For multiple Buttons...
+  const TabButton = (currentTab, setCurrentTab, title, image) => {
+    return (
+      <TouchableOpacity onPress={() => {
+        if (title == "LogOut") {
+          // Do your Stuff...
+          navigation.navigate('Sign')
+        } else {
+          setCurrentTab(title)
+        }
+      }}>
+        <View style={{
+          flexDirection: "row",
+          alignItems: 'center',
+          paddingVertical: 8,
+          backgroundColor: currentTab == title ? 'white' : 'transparent',
+          paddingLeft: 13,
+          paddingRight: 35,
+          borderRadius: 8,
+          marginTop: 15
+        }}>
+  
+          <Image source={image} style={{
+            width: 25, height: 25,
+            tintColor: currentTab == title ? "#5359D1" : "white"
+          }}></Image>
+  
+          <Text style={{
+            fontSize: 15,
+            fontWeight: 'bold',
+            paddingLeft: 15,
+            color: currentTab == title ? "#5359D1" : "white"
+          }}>{title}</Text>
+  
+        </View>
+      </TouchableOpacity>
+    );
+  }
+  
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#5359D1',
+      alignItems: 'flex-start',
+      justifyContent: 'flex-start',
+    },
+  });
+  function Sign(navigation) {
+      const signup=()=>{
+        if(Username==""){
+          alert("اكتب الاسم")
+        }else if (Email==""){
+          alert("ادخل البريد الكتروني ")
+        }else if(Password==""){
+          alert("ادخل الرمز ")
+        }else if(Password.length <8){
+          alert('الرمز قصير')
+        }else if(PasswordConform!==Password){
+          alert ("اعد كتابة الباسورد بشكل صحيح ")
+        }else{
+          navigation.navigate('MyTab')
+        }
+      }
+    
+    return (
+    <View>
+      <Image
+      source={{uri:'https://www.ikea.com/cz/en/images/products/smycka-artificial-flower-rose-red__0903311_pe596728_s5.jpg?f=s'}}
+      style={{
+        width:88,
+        height:88,
+        borderRadius:44,
+        backgroundColor: 'red',
+        marginBottom:20,
+      }}
+      />
+      <Text  
+     style={{
+      marginBottom: 5,
+     marginLeft:15,
+    }}>Username</Text>
+    <TextInput 
+    onChangeText={(text)=>setUsername(text)}
+    placeholder="Enter Username"
+     style={{
+      borderColor:"#ddd",
+      borderRadius:5,
+      borderWidth:1,
+      backgroundColor:"#FFF",
+      marginHorizontal: 12, 
+      marginBottom:16,
+      }}
+      ></TextInput>
+     <Text
+     style={{
+       marginBottom: 5,
+      marginLeft:15,
+     }}
+    >
+       E-mail
+     </Text>
+     <TextInput
+     onChangeText={(text)=>setEmail (text)}
+     placeholder="Enter Your Email"
+     style={{
+     borderColor:"#ddd",
+     borderRadius:5,
+     borderWidth:1,
+     backgroundColor:"#FFF",
+     marginHorizontal: 12, 
+     marginBottom:16,
+     }}
+     ></TextInput>
+     <Text
+     style={{
+      marginBottom: 5,
+     marginLeft:15,
+    }}
+     >
+     Password
+     </Text>
+     <TextInput
+     onChangeText={(text)=>setpassword(text)}
+     placeholder="Enter Your Password"
+     style={{
+      borderColor:"#ddd",
+      borderRadius:5,
+      borderWidth:1,
+      backgroundColor:"#FFF",
+      marginHorizontal: 12, 
+      marginBottom:16,
+      }}
+      secureTextEntry={showpassword}
+    
+     >
+    
+     </TextInput>
+     <Text  
+     style={{
+      marginBottom: 5,
+     marginLeft:15,
+    }}>Confirm Password</Text>
+    <TextInput 
+    onChangeText={(text)=>setpasswordConform(text)}
+    placeholder="Enter Confirm Password "
+    secureTextEntry={showpassword}
+     style={{
+      borderColor:"#ddd",
+      borderRadius:5,
+      borderWidth:1,
+      backgroundColor:"#FFF",
+      marginHorizontal: 12, 
+      marginBottom:16,
+      }}
+      onPress={console.log(setpasswordConform)}
+      ></TextInput>
+    
+    <View style={{alignItems:"center",}}>
+      <TouchableOpacity 
+      onPress={signup}
+       style={{backgroundColor:"#06BCC1",borderRadius:8.54,
+        width:350,height:45, }}><Text style={{textAlign:"center",fontSize:28,}}>Register</Text></TouchableOpacity>
+    </View>
+    </View>
+    )   
+    }
+    const styles=StyleSheet.create({
+    
+      TouchableOpacityStyle:{
+        backgroundColor:"#ccc"
+      }
+    
+    
+    })
+  const videws=()=>{
+    return(
+      <View style={{width:"100%", height:"100%", backgroundColor:"#00bbf9"}}>
+        <Heart/>
+        <FlatList
+          data={Deata}
+          renderItem={({item})=>{
+            return(
+              <View  style={{marginTop:20,alignItems:"center",flex:1,justifyContent:"center"}}>
+                 <TouchableOpacity 
+        onPress={()=>{
+          Linking.openURL(`${item.videw}`)
+          setScore(score+1)
+        }}
+        >
+       <Image source={item.url}
+       style={{width:360,height:200,marginLeft:35,marginRight:35,borderRadius:20}}
+       />
+        </TouchableOpacity>
+      <Text style={{marginRight:35,marginLeft:35,fontSize:30}}>{item.title}</Text>
+    </View>
+            )
+          }}/>
+      </View>
+    )
+  }
+  const quiz1=({navigation})=>{
+    const togllemode=()=>{
+      if(score < 1){
+        alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+        navigation.navigate('Drawer')
+        setShowScore(false)
+      }
+     }
+    const doAnswer = (isCorrect) => {	
+    	const nextQuestion1 = currentQuestion1 +1;
+		if (currentQuestion1==5) {
+      if (score1==0){
+        setShowScore(true);
+      }else{
+        setShowScore1(true)
+    }
+    }else if(score < 1){
+        alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+        navigation.navigate('MyTabs')
+    }else if(isCorrect!==true) {
+        if(score < 1){
+          alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+          navigation.navigate('MyTabs')
+        }
+        setScore(score-1)   
+        alert("الاجابة خطاء")
+      }
+    else if(isCorrect==true) { 
+      if(score < 1 ){
+        alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+        navigation.navigate('MyTabs')
+      }
+      alert("الاجابة صحيحة ")
+      setScore2(score2+1) 
+      setcore1(core1+60)
+     
+    }else if(score < 1){
+      alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+          navigation.navigate('MyTabs')
+        }
+   else{
+    }
+			if (nextQuestion1 < quizali.length) {
+			setCurrentQuestion1(nextQuestion1);
+      }
+    else { 
+      if(isCorrect!==true) {
+        if(score < 1){
+          alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+          navigation.navigate('MyTabs')
+        }
+        setScore(score-1)   
+        alert("الاجابة خطاء")
+        setShowScore(true)
+      }else{
+        if(score < 1 ){
+          alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+          navigation.navigate('MyTabs')
+        }
+        alert("الاجابة صحيحة ")
+        setScore1(score2+1) 
+        setcore(core1+60)    
+        setShowScore(true)
+      }
+    }
+  
+  }
+    return(
+        <View style={{backgroundColor:"#00bbf9",width:"100%",height:"100%",marginTop:0,marginBottom:50}}>
+          <Heart/>
+          <View style={{backgroundColor:"#00bbf9",width:"100%",height:30,}}>
+            <View style={{backgroundColor:"#FFF",width:core1,height:25,borderRadius:15,marginTop:4,marginLeft:2.2,marginRight:3.2}}>
+            </View>
+          </View>
+          <Text style={{fontSize:30,textAlign:"center",marginTop:50,marginBottom:50}}>{quizhussin[currentQuestion1].questionText}</Text>
+          <View style={{justifyContent:"center",alignItems: "center",marginTop:30,marginBottom:65}}>
+            {quizhussin[currentQuestion1].answerOptions.map(answer => {
+              return (
+                <TouchableOpacity
+                style={{ backgroundColor:"#FFF",width:300,height:50,marginBottom:15,marginTop:15,borderRadius:20}}
+                 onPress={() => doAnswer(answer.isCorrect)}>
+                  <Text style={{fontSize:25,textAlign:"center"}}>{answer.answerText}</Text>
+                </TouchableOpacity>
+                
+              )
+            })}
+          </View>
+          <View style={{alignItems: "center",flex:1,}}>
+          <Modal 
+            animationType="slide"
+            transparent={true}
+            visible={showScore}
+            >
+              <View style={{backgroundColor:"#FFF",borderRadius:20,marginLeft:50,marginRight:50,marginTop:150,height:150}}>
+                <Text></Text>
+                <Text style={{fontSize:35,textAlign:"center",}}>6/{score2}</Text>
+                <View style={{alignItems: "center",flex:1,}}>
+                <TouchableOpacity
+                onPress={()=>navigation.navigate('MyTabs')}
+                 style={{backgroundColor:"#00BB9f",width:150,height:50,borderRadius:20,marginTop:20}}>
+                  <Text style={{fontSize:35,textAlign:"center"}}>انهاء</Text>
+                </TouchableOpacity>
+                </View>
+                </View>
+            </Modal>
+          </View>
+        </View>
+    )}
+
+  const rect = ({navigation}) => {
+    const weth=Dimensions.get('window').width
+    return (
+      <View style={{backgroundColor:"#00bbf9",width:"100%",height:"100%"}}> 
+      <Heart/>
+        <ScrollView style={{backgroundColor:"#00bbf9"}}>
+            <FlatList 
+            horizontal
+            data={Deata}
+            scrollEnabled
+            horizontal
+            keyExtractor={item => item.id}
+            style={{backgroundColor:"#00bbf9"}}
+            renderItem={({item,index})=>{
+              return (
+                <View style={{marginTop:10}}>
+                <View>
+                <TouchableOpacity
+                  onPress={()=>{
+                    setScore(score+1)
+                    Linking.openURL(`${item.videw}`)}}
+                          >
+                    <Image style={{width:370,height:200,marginRight:10 ,marginLeft:10,marginBottom:30,borderRadius:15}}
+                    source={item.url}/>
+               </TouchableOpacity>
+                  </View>
+                </View>
+              )
+            }}/>
+              <ScrollView 
+            scrollEnabled
+            style={{backgroundColor:"#00bbf9"}}>
+                <View style={{alignItems: "center",justifyContent: "center",flex:1}}>
+                <TouchableOpacity 
+                onPress={()=>{
+                  if(score <1){
+                    alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+                    navigation.navigate('Drawer')
+                  }else{
+                    navigation.navigate('Quiz')
+                  }
+                }
+              }
+                style={{width:280, height:60,backgroundColor:"#FFF", marginTop:10,marginBottom:10,borderRadius:15}}>
+              <Text style={{fontSize:30, fontWeight:"bold",textAlign:"center",marginTop:5,marginBottom:5}}>اسئلة عن الامام علي</Text>
+            </TouchableOpacity>
+               <TouchableOpacity 
+                onPress={()=>{
+                  if(score <1){
+                    alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+                    navigation.navigate('Drawer')
+                  }else{
+                    navigation.navigate('Quiz')
+                  }
+                }
+              }
+                 style={{width:280, height:60,backgroundColor:"#FFF", marginTop:10,marginBottom:10,borderRadius:15}}>
+              <Text style={{fontSize:30, fontWeight:"bold",textAlign:"center",marginTop:5,marginBottom:5}}>اسئلة عن الامام حسن</Text>
+            </TouchableOpacity>
+                  </View>
+              </ScrollView>
+            </ScrollView>
+
+            </View>
+    )
+}
+
+   const Deata=[ 
+      {
+            title: 'اسئلة الامام الحسن',
+            url:require('./App/Image/hussin.jpg'),
+            videw:"https://www.youtube.com/watch?v=qTgZvso-7Jk",
+            heart:require('./App/Image/heartn.png'),
+            id:1,   
+           },
+           {
+           title: 'اسئلة الامام علي ',
+           url:require('./App/Image/ali.jpg'),
+           videw:"https://www.youtube.com/watch?v=WpXxeQLZJBY",
+           heart:require('./App/Image/heartn.png'),
+           id:2,
+          },  
+    ]
+    const naw=[ 
+      [0],
+      [1]
+    ]
+  const quizhussin=[
+    {
+      question:"اسئلة الامام علي ",
+  questionText: 'في اي سنة ولد الامام الحسن ',
+  answerOptions: [
+   { answerText: '4 للهجرة ', isCorrect: true,score:1  },
+   { answerText: ' 2  للهجرة', isCorrect: false},
+   { answerText: '3 للهجرة', isCorrect: true,score:1 },
+   { answerText: '5 للهجر',isCorrect: false },
+ ], 
+},
+{
+ questionText:"في اي سنة مات الامام الحسن ",
+ answerOptions: [
+   { answerText: '50 للهجرة',isCorrect: true ,score:1},
+   { answerText: '51  للهجرة', isCorrect: false,score:1 },
+   { answerText: "53 للهجرة", isCorrect: false},
+
+ ],   
+} ,
+{
+
+ questionText:"من هي  ام  الامام الحسن ",
+ answerOptions: [
+   { answerText: 'خديجة بنت خويلد ',isCorrect: false },
+   { answerText: "فاطمة الزهراء  بنت النبي", isCorrect:true,score:1 },
+   { answerText: "مريم بنت عمران ", isCorrect: false},
+ ],   
+},
+{
+ question:"اسئلة الامام علي ",
+  questionText:" ماهو ترتيب الامام  الحسن بين ائمة الشيعه",
+  answerOptions: [
+    { answerText: 'الثالث  ',isCorrect: false },
+    { answerText: " الرابع ",  },
+    { answerText: "الأول",},
+    { answerText: "الثاني ", isCorrect: true},
+  ],   
+ },
+ {
+  question:"اسئلة الامام علي ",
+  questionText:"اين دفن  الامام الحسن",
+  answerOptions: [
+    { answerText: "النجف الاشرف الكوفة "},
+    { answerText: "في السعودية في مقبرة البقيع", isCorrect: true,score:1},
+    { answerText: " في مكة المكرمة "},
+  ],   
+ },
+ {
+  question:"مدة امامة الامام الحسن",
+  questionText:"مدة امامة الامام الحسن(ع)",
+  answerOptions: [
+    { answerText: '10سنوات ', isCorrect: true ,score:1 },
+    { answerText: "12 سنوات ", isCorrect: false},
+    { answerText: "13 سنوات", isCorrect: false},
+    { answerText: "14 سنوات", },
+  ],   
+ }
+  ]
+  const quizali=[
+    {
+      question:"اسئلة الامام علي ",
+  questionText: 'في اي سنة ولد الامام علي ',
+  answerOptions: [
+   { answerText: '21 قبل الهجرة', isCorrect: false },
+   { answerText: ' 22 قبل  الهجرة', isCorrect: false},
+   { answerText: '23 قبل الهجرة ', isCorrect: true,score:1 },
+   { answerText: '24 قبل الهجرة ',isCorrect: false },
+ ], 
+},
+{
+ questionText:"في اي سنة مات الامام علي ",
+ answerOptions: [
+   { answerText: '38 للهجرة ',isCorrect: false },
+   { answerText: '40للهجرة ', isCorrect: true,score:1 },
+   { answerText: "33 للهجرة", isCorrect: false},
+
+ ],   
+} ,
+{
+
+ questionText:"من هي  ام  الامام علي ",
+ answerOptions: [
+   { answerText: 'خديجة بنت خويلد ',isCorrect: false },
+   { answerText: "فاطمة بنت اسد", isCorrect: true,score:1 },
+   { answerText: "مريم بنت عمران ", isCorrect: false},
+ ],   
+},
+{
+ question:"اسئلة الامام علي ",
+  questionText:" ماهو ترتيب الامام  علي بين ائمة الشيعه",
+  answerOptions: [
+    { answerText: 'الثالث  ',isCorrect: false },
+    { answerText: " الرابع ",  },
+    { answerText: "الأول",isCorrect: true,score:1},
+    { answerText: "الثالث ", isCorrect: false},
+  ],   
+ },
+ {
+  question:"اسئلة الامام علي ",
+  questionText:"اين ولد الامام علي",
+  answerOptions: [
+    { answerText: 'مكة االمكرمة',isCorrect: false },
+    { answerText: "النجف الاشرف الكوفة ", isCorrect: false},
+    { answerText: "في السعودية في البقيع", isCorrect: false},
+    { answerText: " في مكة المكرمة في جوف الكعبة ", isCorrect: true ,score:1},
+  ],   
+ },
+ {
+  question:"اسئلة عن الامام علي ",
+  questionText:"ما صلة القرابة بين الامام علي والنبي محمد(ص)",
+  answerOptions: [
+    { answerText: 'ابن عمه', isCorrect: true ,score:1 },
+    { answerText: "اخوه", isCorrect: false},
+    { answerText: "ابن خاله ", isCorrect: false},
+    { answerText: "عمه ", },
+  ],   
+ }
+  ]
+  const weth=Dimensions.get('window').width
+  const Login = ({navigation}) => {
+    return (
+      <View  style={{alignItems:"center",flex:1,justifyContent:"center",backgroundColor:"#00bbf9",width:"100%",height:"100%",position:"relative"}}>
+        <Heart/>
+      <ScrollView
+      horizontal
+      scrollEnabled={true} >
+      <View style={{backgroundColor:"#00bbf9",width:"100%",height:"100%",flexDirection:"row",marginTop:175}}>
+          <TouchableOpacity 
+          onPress={()=>{
+            if(score <1){
+              alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+              navigation.navigate('Drawer')
+            }else{
+              navigation.navigate('Quiz')
+            }
+          }}
+          style={{marginBottom:30,width:320,height:280,backgroundColor:"#FFF",marginLeft:35,marginRight:35,borderRadius:40}} >
+              <Text style={{textAlign:"center",fontSize:35}}>اسئلة عن الامام علي </Text>
+            </TouchableOpacity>
+          <TouchableOpacity 
+          onPress={()=>{
+            if(score==0){
+              alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+              navigation.navigate('Drawer')
+            }else{
+              navigation.navigate('Quiz1')
+            }
+          }}
+          style={{marginBottom:30,width:320,height:280,backgroundColor:"#FFF",marginLeft:35,marginRight:35,borderRadius:40}} >
+              <Text style={{textAlign:"center",fontSize:35}}>اسئلة عن الامام حسن </Text>
+            </TouchableOpacity>
+            </View> 
+    </ScrollView>
+    </View>
+    )
+  }
+  const quiz=({navigation})=>{
+    const togllemode=()=>{
+      if(score < 1){
+        alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+        navigation.navigate('Drawer')
+        setShowScore(false)
+      }
+     }
+    const doAnswer = (isCorrect) => {	
+    	const nextQuestion = currentQuestion +1;
+      if(score < 1){
+          alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+          navigation.navigate('MyTabs')
+      }else if(isCorrect!==true) {
+          if(score < 1){
+            alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+            navigation.navigate('MyTabs')
+          }
+          setScore(score-1)   
+          alert("الاجابة خطاء")
+        }
+      else if(isCorrect==true) { 
+        if(score < 1 ){
+          alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+          navigation.navigate('MyTabs')
+        }
+        alert("الاجابة صحيحة ")
+        setScore1(score1+1) 
+        setcore(core +60)
+       
+      }else if(score < 1){
+        alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+            navigation.navigate('MyTabs')
+      }
+      if (nextQuestion < quizali.length) {
+        setCurrentQuestion(nextQuestion);
+        }
+        else{
+          if(isCorrect!==true) {
+            if(score < 1){
+              alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+              navigation.navigate('MyTabs')
+            }
+            setScore(score-1)   
+            alert("الاجابة خطاء")
+            setShowScore1(true)
+          }else{
+            if(score < 1 ){
+              alert('عدد القلوب غير كافي قم بمشاهدة المقاطع للحصول على قلوب')
+              navigation.navigate('MyTabs')
+            }
+            alert("الاجابة صحيحة ")
+            setScore1(score1+1) 
+            setcore(core +60)    
+            setShowScore1(true)
+          }
+      }
+  }
+  let coreatt=30
+    return(
+        <View style={{backgroundColor:"#00bbf9",width:"100%",height:"100%",marginTop:0,marginBottom:50}}>
+          <Heart/>
+          <View style={{backgroundColor:"#00bbf9",width:"100%",height:30,}}>
+            <View style={{backgroundColor:"#FFF",width:core,height:25,borderRadius:15,marginTop:4,marginLeft:2.2,marginRight:3.2}}>
+             
+            </View>
+          </View>
+          <View style={{flexDirection:"row"}}>
+              <Text style={{color:"#FFF", fontSize: 20, opacity: 0.6, marginRight: 2}}>{currentQuestion+1}</Text>
+              <Text style={{color:"#FFFF", fontSize: 18, opacity: 0.6}}>/6</Text>
+             </View>
+          <Text style={{fontSize:30,textAlign:"center",marginTop:50,marginBottom:50}}>{quizali[currentQuestion].questionText}</Text>
+          <View style={{justifyContent:"center",alignItems: "center",marginTop:30,marginBottom:65}}>
+            {quizali[currentQuestion].answerOptions.map(answer => {
+              return (
+                <TouchableOpacity
+                style={{ backgroundColor:"#FFF",width:300,height:50,marginBottom:15,marginTop:15,borderRadius:20}}
+                 onPress={() => doAnswer(answer.isCorrect)}>
+                  <Text style={{fontSize:25,textAlign:"center"}}>{answer.answerText}</Text>
+                </TouchableOpacity>
+                
+              )
+            })}
+            <Modal 
+            animationType="slide"
+            transparent={true}
+            visible={showScore1}
+            >
+              <View style={{backgroundColor:"#FFF",borderRadius:20,marginLeft:50,marginRight:50,marginTop:150,height:150}}>
+                <Text></Text>
+                <Text style={{fontSize:35,textAlign:"center",}}>6/{score1}</Text>
+                <View style={{alignItems: "center",flex:1,}}>
+                <TouchableOpacity
+                onPress={()=>navigation.navigate('MyTabs')}
+                 style={{backgroundColor:"#00BB9f",width:150,height:50,borderRadius:20,marginTop:20}}>
+                  <Text style={{fontSize:35,textAlign:"center"}}>انهاء</Text>
+                </TouchableOpacity>
+                </View>
+                </View>
+            </Modal>
+          </View>
+        </View>
+    )}
+    const Heart =()=>{ 
+      return(
+        <View style={{width: '100%', height: 85,backgroundColor:"#FFF",}}>
+          <View  style={{marginTop:47,marginLeft:15,marginRight:15,flexDirection:"row"}}>
+            <Image
+            style={{width:34,height:34,marginRight:2.9,marginBottom:4.5}}
+            resizeMode="contain"
+            source={require('./App/Image/heartn.png')}/>
+            <Text style={{padding:4.2,fontSize:18.7,backgroundColor:"",paddingLeft:2.2,paddingTop:2.2,paddingRight:2.2,paddingBottom:2.2,borderRadius:12.5}}>{score}</Text>
+          </View>
+        </View>
+      )
+    }
+    const MyTab=()=>{
+      return(
+        <Tab.Navigator
+        initialRouteName="rect"
+         screenOptions={{
+           headerShown:false,
+           tabBarColor:"00bbf9",
+          tabBarActiveTintColor: '#00BB9f',}}>
+            <Tab.Screen 
+                    options={{
+                      tabBarLabel: '',
+                      tabBarIcon: ({ color, size }) => (
+                        < View style={{marginTop:0}}>
+                        <Image style={{width:40, height:40,marginTop:8.5}} resizeMode="stretch" source={require('./App/Image/mytab.png')} />
+                        </View>
+                      ),
+                    }}
+            name="MyTabs"component={Login}/>
+            <Tab.Screen 
+             options={{
+              tabBarLabel: '',
+              tabBarIcon: ({ color, size }) => (
+                <View style={{marginTop:7.2, }}>
+                <Image style={{width:45, height:45}} source={require('./App/Image/home.png')}/>
+                </View>
+              ),
+            }}
+            name="rect" component={rect} />
+             <Tab.Screen
+              options={{
+                tabBarLabel: '',
+                tabBarIcon: ({ color, size }) => (
+                  <View style={{marginTop:7.2, }}>
+                  <Image style={{width:45, height:45}} source={require('./App/Image/videws.png')}/>
+                  </View>
+                ),
+              }}
+             name="Drawer" component={videws}/>
+                <Tab.Screen
+              options={{
+                tabBarLabel: '',
+                tabBarIcon: ({ color, size }) => (
+                  <View style={{marginTop:7.2, }}>
+                  <Image style={{width:45, height:45}} source={require('./assets/profile.png')}/>
+                  </View>
+                ),
+              }}
+             name="profile" component={profile}/>
+           </Tab.Navigator>
+      )
+    }
+  const Stack=createStackNavigator()
+  return (
+    <NavigationContainer> 
+      <Stack.Navigator screenOptions={{headerShown:false}}> 
+      <Stack.Screen  name="Sign"component={Sign}/>
+      <Stack.Screen  name="MyTab"component={MyTab}/>
+      <Stack.Screen name="Quiz1"component={quiz1}/>
+      <Stack.Screen name="Quiz"component={quiz}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+  )
+}
+
+export default App
